@@ -12,7 +12,14 @@ var dataPoints =[];
 
 export default class App extends Component {
 
-	
+	constructor(props) {
+		super(props)
+		this.state = {address: "41 Cooper Square"}
+		this.handleSelect = this.handleSelect.bind(this)
+	}	
+	handleSelect(event) {
+		this.setState({address: event.value})
+	}
 
 	test_data = [
     {
@@ -36,14 +43,11 @@ export default class App extends Component {
       value: 'Karius',
     },
   ]
-	render() {
-
-
-
+	render() {	
 		const options = {
 			theme: "light2",
 			title: {
-				text: "Stock Price of NIFTY 50"
+				text: "Price per Sq Ft of " + this.state.address
 			},
 			axisY: {
 				title: "Price in USD",
@@ -59,22 +63,29 @@ export default class App extends Component {
 		}
 		return (
 
-		<div>
-		<h1> Hello </h1>
+		<div> 
+		<center>
+		<h1> Real Estate Efficiency Calculator </h1>
+		</center>
+
 		<ReactSearchBox
         placeholder="Placeholder"
-        value="Doe"
+        value="41 Cooper Square"
+        onSelect={this.handleSelect}
         data={this.test_data}
         callback={record => console.log(record)}
       />
-    
-			<CanvasJSChart options = {options} 
-				 onRef={ref => this.chart = ref}
-			/>
-			{/*You can get reference to the chart instance as shown above using onRef. 
-			This allows you to access all chart properties and methods*/}
 
-		
+		    
+		<CanvasJSChart options = {options} 
+			 onRef={ref => this.chart = ref}
+		/>
+		{/*You can get reference to the chart instance as shown above using onRef. 
+		This allows you to access all chart properties and methods*/}
+
+
+		<p> Avg Price of Zip Code</p>
+
       </div>
 		);
 	}
