@@ -16,6 +16,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 var addressPoints = []; 
 var dataPoints =[];
+var db_connection = [];
 
 
 export default class App extends Component {
@@ -42,6 +43,24 @@ export default class App extends Component {
 			}
 		})
 		console.log(addressPoints);
+	}
+
+	getDataFromDb = (zipCode) => {
+		console.log("Going into getdata"+zipCode);
+
+		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				db_connection.push({
+					address: data1.data[i].address,
+					value: data1.data[i].address.oneLine
+				});
+			}
+		})
+		console.log(db_connection);
 	}
 
 	test_data = [
@@ -130,9 +149,11 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		//this.getDataFromDb(11598).then((data)=>console.log(data.json()));
+		this.getDataFromDb(11598);
 		this.getDataByAddress(11598,'326 barr ave, woodmere, ny 11598');
 	}
+
+	/*
 
 	getDataFromDb = (zipCode) => {
 		console.log("Going into getdata");
@@ -149,7 +170,7 @@ export default class App extends Component {
 		  //.then((res) => this.setState({ data: res.data }));
 		  //console.log('data: ',dat2)
 
-	};
+	};*/
 
 	getDataByAddress = (zipcode,line1) => {
 		// (address_num<>street_name,<>town,<>state<>zipcode)
