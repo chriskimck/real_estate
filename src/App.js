@@ -130,13 +130,14 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		this.getDataFromDb(11598).then((data)=>console.log(data.json()));
+		//this.getDataFromDb(11598).then((data)=>console.log(data.json()));
+		this.getDataByAddress(11598,'326 barr ave, woodmere, ny 11598');
 	}
 
 	getDataFromDb = (zipCode) => {
 		console.log("Going into getdata");
 
-		var dat = fetch("http://localhost:3001/api/getPropertyTax/:"+zipCode);
+		var dat = fetch("http://localhost:3001/api/getPropertyTax/"+zipCode);
 		return dat;
 		console.log('dat: ',dat)
 
@@ -149,6 +150,15 @@ export default class App extends Component {
 		  //console.log('data: ',dat2)
 
 	};
-	  
+
+	getDataByAddress = (zipcode,line1) => {
+		// (address_num<>street_name,<>town,<>state<>zipcode)
+		// (326 barr ave, woodmere, ny 10025)
+		// ave, rd .. NOT avenue,road
+
+		console.log('Fetching data by address for: ',line1,', ',zipcode);
+		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1);
+
+	}; 
 
 }

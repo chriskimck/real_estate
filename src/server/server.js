@@ -35,46 +35,46 @@ const dbconn = MongoClient.connect(dbRoute, function(err, conn) {
     return conn;
 });
 
-
-// connects our back end code with the database
-//mongoose.connect(dbRoute, { useNewUrlParser: true });
-
-//let db = mongoose.connection;
-
-//db.once('open', () => console.log('connected to the database'));
-
-// checks if connection with the database is successful
-//db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-
-
-
-// (optional) only made for logging and
-// bodyParser, parses the request body to be a readable json format
-/*app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(logger('dev'));*/
-
-// this is our get method
-// this method fetches all available data in our database
-
-//mongoose.connect(dbRoute, { useNewUrlParser: true });
-
-//Get the default connection
-//var db = mongoose.connection;
-
-//db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 router.get('/getPropertyTax/:zipcode', (req, res) => {
     let zipCode = req.params.zipcode;
 
-    console.log("In get Data route");
+    console.log("In get Data route, zipcode: "+zipCode);
 
     MongoClient.connect(dbRoute, function (err, conn){
-        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipCode).find({}).toArray((err, data) => {
+        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipCode).find().toArray((err, data) => {
 
-            //console.log(data);
-            if (err) return res.json({ success: false, error: err });
+            console.log('Returns: ',data);
+            if (err){
+                conn.close();
+                return res.json({ success: false, error: err });
+            } 
+            res.json({ success: true, data: data });
+            conn.close();
+        });
+        
+    });
+
+    
+});
+
+router.get('/getPropertyTaxByAddress/:zipcode/:address1', (req, res) => {
+    let zipcode = req.params.zipcode;
+    let line1 = req.params.address1.toUpperCase;
+
+    console.log('zipcode:',zipcode);
+    console.log('line1:',line1);
+
+    console.log('In get tax assess by address route for: ',line1,', ',zipcode);
+
+    MongoClient.connect(dbRoute, function (err, conn){
+        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipcode).find({"address.oneLine":line1}).toArray((err, data) => {
+
+            console.log('Returns: ',data[0]);
+            if (err){
+                conn.close();
+                return res.json({ success: false, error: err });
+            } 
+            conn.close();
             res.json({ success: true, data: data });
         });
     });
