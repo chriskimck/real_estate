@@ -5,13 +5,25 @@ var CanvasJSReact = require('./canvasjs.react');
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  
-class App extends Component {	
+class App extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {address: "New York", submit: "New York"}
+		this.handleAddressChange = this.handleAddressChange.bind(this)
+		this.handleSubmit = this.handleSubmit.bind(this)
+	}	
+	handleAddressChange(event) {
+		this.setState({address: event.target.value})
+	}
+	handleSubmit(event) {
+		this.setState({submit: this.state.address})
+	}
 	render() {
 		const options = {
 			animationEnabled: true,
 			theme: "light2",
 			title:{
-				text: "Stock Price of House - March 2018"
+				text: "Price of House - 2018 " + this.state.submit 
 			},
 			axisX:{
 				valueFormatString: "DD MMM",
@@ -23,7 +35,7 @@ class App extends Component {
 			axisY: {
 				title: "Housing Price",
 				includeZero: false,
-				valueFormatString: "€##0.00",
+				valueFormatString: "$##0.00",
 				crosshair: {
 					enabled: true,
 					snapToDataPoint: true,
@@ -35,7 +47,7 @@ class App extends Component {
 			data: [{
 				type: "area",
 				xValueFormatString: "DD MMM",
-				yValueFormatString: "€##0.00",
+				yValueFormatString: "$##0.00",
 				dataPoints: [
 				  { x: new Date("2018-03-01"), y: 85.3},
 				  { x: new Date("2018-03-02"), y: 83.97},
@@ -63,12 +75,11 @@ class App extends Component {
 		}
 		
 		return (
-			<input
-				type="text"
-				value={this.state.value}
-				onchange={this.handleChange}
-			/>
 		<div>
+			<center> <h1> Input Address </h1>
+        	<input type="text" name="address" onChange={this.handleAddressChange} size = "40"/>
+        	<button type="button" id="myBtn" onClick={this.handleSubmit}> Submit </button> </center>
+
 			<CanvasJSChart options = {options} 
 				/* onRef={ref => this.chart = ref} */
 			/>
