@@ -65,13 +65,15 @@ app.use(logger('dev'));*/
 
 //db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-router.get('/getData', (req, res) => {
+router.get('/getPropertyTax/:zipcode', (req, res) => {
+    let zipCode = req.params.zipcode;
+
     console.log("In get Data route");
 
     MongoClient.connect(dbRoute, function (err, conn){
-        conn.db("RealEstate").collection('PropertyTaxAssessments11096').find({}).toArray((err, data) => {
+        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipCode).find({}).toArray((err, data) => {
 
-            console.log(data);
+            //console.log(data);
             if (err) return res.json({ success: false, error: err });
             res.json({ success: true, data: data });
         });

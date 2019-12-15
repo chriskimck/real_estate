@@ -12,6 +12,8 @@ var dataPoints =[];
 
 export default class App extends Component {
 
+	
+
 	test_data = [
     {
       key: 'john',
@@ -34,7 +36,10 @@ export default class App extends Component {
       value: 'Karius',
     },
   ]
-	render() {	
+	render() {
+
+
+
 		const options = {
 			theme: "light2",
 			title: {
@@ -89,15 +94,25 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		.then(this.getDataFromDb());
+		this.getDataFromDb(11598).then((data)=>console.log(data.json()));
 	}
 
-	getDataFromDb = () => {
+	getDataFromDb = (zipCode) => {
 		console.log("Going into getdata");
 
-		fetch("http://localhost:3001/api/getData")
-		  .then((data) => data.json())
-		  .then((res) => this.setState({ data: res.data }));
-	  };
+		var dat = fetch("http://localhost:3001/api/getPropertyTax/:"+zipCode);
+		return dat;
+		console.log('dat: ',dat)
+
+		fetch("http://localhost:3001/api/getPropertyTax/:"+zipCode)
+		  .then((data) => {
+			  var dat2 = data.json();
+			  console.log('dat2: ',dat2)
+		  })
+		  //.then((res) => this.setState({ data: res.data }));
+		  //console.log('data: ',dat2)
+
+	};
+	  
 
 }
