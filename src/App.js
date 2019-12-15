@@ -1,4 +1,12 @@
-/* App.js */
+/* App.js 
+
+To Do:
+
+- Incorporate addresses to the json file to test search bar
+- 
+
+
+*/
 import ReactSearchBox from 'react-search-box'
 import React, { Component } from 'react'
 var CanvasJSReact = require('./canvasjs.react');
@@ -6,7 +14,7 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
- 
+var addressPoints = []; 
 var dataPoints =[];
 
 
@@ -20,29 +28,44 @@ export default class App extends Component {
 	handleSelect(event) {
 		this.setState({address: event.value})
 	}
+	testMount(){
+		fetch('./address-store.json')
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data) {
+			for (var i = 0; i < data.length; i++) {
+				addressPoints.push({
+					key: data[i].key,
+					value: data[i].value
+				});
+			}
+		})
+		console.log(addressPoints);
+	}
 
 	test_data = [
-    {
-      key: 'john',
-      value: 'John Doe',
-    },
-    {
-      key: 'jane',
-      value: 'Jane Doe',
-    },
-    {
-      key: 'mary',
-      value: 'Mary Phillips',
-    },
-    {
-      key: 'robert',
-      value: 'Robert',
-    },
-    {
-      key: 'karius',
-      value: 'Karius',
-    },
-  ]
+	    {
+	      key: 'john',
+	      value: 'John Doe',
+	    },
+	    {
+	      key: 'jane',
+	      value: 'Jane Doe',
+	    },
+	    {
+	      key: 'mary',
+	      value: 'Mary Phillips',
+	    },
+	    {
+	      key: 'robert',
+	      value: 'Robert',
+	    },
+	    {
+	      key: 'karius',
+	      value: 'Karius',
+	    },
+    ]
 	render() {	
 		const options = {
 			theme: "light2",
@@ -61,6 +84,8 @@ export default class App extends Component {
 				dataPoints: dataPoints
 			}]
 		}
+		this.testMount();
+
 		return (
 
 		<div> 
@@ -72,7 +97,7 @@ export default class App extends Component {
         placeholder="Placeholder"
         value="41 Cooper Square"
         onSelect={this.handleSelect}
-        data={this.test_data}
+        data={addressPoints}
         callback={record => console.log(record)}
       />
 
