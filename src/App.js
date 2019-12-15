@@ -60,7 +60,7 @@ export default class App extends Component {
 				});
 			}
 		})
-		console.log(db_connection);
+		console.log('Data got from db: ',db_connection);
 	}
 
 	test_data = [
@@ -149,8 +149,8 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		this.getDataFromDb(11598);
-		this.getDataByAddress(11598,'326 barr ave, woodmere, ny 11598');
+		//this.getDataFromDb(11598);
+		this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
 	}
 
 	/*
