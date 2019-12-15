@@ -88,6 +88,16 @@ export default class App extends Component {
 				});
 			}
 			chart.render();
-		});
+		})
+		.then(this.getDataFromDb());
 	}
+
+	getDataFromDb = () => {
+		console.log("Going into getdata");
+
+		fetch("http://localhost:3001/api/getData")
+		  .then((data) => data.json())
+		  .then((res) => this.setState({ data: res.data }));
+	  };
+
 }

@@ -13,10 +13,10 @@ const router = express.Router();
 
 // this is our MongoDB database
 const dbRoute =
-  "mongodb+srv://chriskim511:realEstate@cluster0-owylp.mongodb.net/test?retryWrites=true&w=majority";
+  "mongodb+srv://christopherkim511:realEstate@cluster0-owylp.mongodb.net/test?retryWrites=true&w=majority";
 
 
-MongoClient.connect(dbRoute, function(err, conn) {
+const dbconn = MongoClient.connect(dbRoute, function(err, conn) {
     if(err) {
         console.log("Error");
     }
@@ -30,10 +30,9 @@ MongoClient.connect(dbRoute, function(err, conn) {
         conn.db("RealEstate").collection('PropertyTaxAssessments11096').find({}).count()
             .then(function(numItems) {
             console.log('Number of items found is: ',numItems); // Use this to debug
-        });
-        conn.close();
-
+        });    
     }
+    return conn;
 });
 
 
@@ -58,15 +57,29 @@ app.use(logger('dev'));*/
 
 // this is our get method
 // this method fetches all available data in our database
+
+//mongoose.connect(dbRoute, { useNewUrlParser: true });
+
+//Get the default connection
+//var db = mongoose.connection;
+
+//db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 router.get('/getData', (req, res) => {
-  Data.find((err, data) => {
-    if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true, data: data });
-  });
+    console.log("In get Data route");
+
+    MongoClient.connect(dbRoute, function (err, conn){
+        conn.db("RealEstate").collection('PropertyTaxAssessments11096').find({}).toArray((err, data) => {
+
+            console.log(data);
+            if (err) return res.json({ success: false, error: err });
+            res.json({ success: true, data: data });
+        });
+    });
 });
 
 // append /api for our http requests
-//app.use('/api', router);
+app.use('/api', router);
 
 // launch our backend into a port
-//app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
