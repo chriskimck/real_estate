@@ -2,8 +2,7 @@
 //11598 11559 11096
 To Do:
 
-- Incorporate addresses to the json file to test search bar
-- 
+- Incorporate all addresses to search bar, not only 11598
 
 
 */
@@ -49,6 +48,18 @@ export default class App extends Component {
 		console.log("Going into getdata"+zipCode);
 
 		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				db_connection.push({
+					key: data1.data[i].address,
+					value: data1.data[i].address.oneLine
+				});
+			}
+		})
+		fetch("http://localhost:3001/api/getPropertyTax/11559")
 		.then(function(response) {
 			return response.json();
 		})
