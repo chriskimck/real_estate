@@ -11,6 +11,7 @@ import React, { Component } from 'react'
 var CanvasJSReact = require('./canvasjs.react');
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+var calc = require('./effCalc.js');
 
 
 var addressPoints = []; 
@@ -41,12 +42,10 @@ export default class App extends Component {
 				});
 			}
 		})
-		console.log(addressPoints);
+		//console.log(addressPoints);
 	}
 
 	getDataFromDb = (zipCode) => {
-		console.log("Going into getdata"+zipCode);
-
 		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
 		.then(function(response) {
 			return response.json();
@@ -54,24 +53,16 @@ export default class App extends Component {
 		.then(function(data1) {
 			for (var i = 0; i < data1.data.length; i++) {
 				db_connection.push({
-					key: data1.data[i].address,
-					value: data1.data[i].address.oneLine
+					values: data1.data[i]
+					//address: data1.data[i].address,
+					//value: data1.data[i].address.oneLine
 				});
 			}
+			return db_connection;
 		})
-		fetch("http://localhost:3001/api/getPropertyTax/11559")
-		.then(function(response) {
-			return response.json();
-		})
-		.then(function(data1) {
-			for (var i = 0; i < data1.data.length; i++) {
-				db_connection.push({
-					key: data1.data[i].address,
-					value: data1.data[i].address.oneLine
-				});
-			}
-		})
-		console.log('Data got from db: ',db_connection);
+		.then(function(db_connection) {
+			calc.getAvg(db_connection);
+		});
 	}
 
 	test_data = [
@@ -95,8 +86,9 @@ export default class App extends Component {
 	      key: 'karius',
 	      value: 'Karius',
 	    },
-    ]
-	render() {	
+	]
+	
+	render(){
 		const options = {
 			theme: "light2",
 			title: {
@@ -161,12 +153,12 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
+		this.getDataFromDb(11598);
+		//this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
+		//this.getDataByZip(11598);
 	}
 
-	/*
-
-	getDataFromDb = (zipCode) => {
+	/*getDataFromDb = (zipCode) => {
 		console.log("Going into getdata");
 
 		var dat = fetch("http://localhost:3001/api/getPropertyTax/"+zipCode);
@@ -189,7 +181,29 @@ export default class App extends Component {
 		// ave, rd .. NOT avenue,road
 
 		console.log('Fetching data by address for: ',line1,', ',zipcode);
-		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1);
+		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1)
+		
+
+	}; 
+
+	getDataByZip = (zipcode) => {
+
+		console.log('Fetching data by address for: ',zipcode);
+		fetch("http://localhost:3001/api/getPropertyTaxByZip/"+zipcode)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				db_connection.push({
+					address: data1.data[i].address,
+					value: data1.data[i].address.oneLine
+				});
+			}
+		})
+		.then(function(db_connection) {
+			calc.getAvg(db_connection);
+		});
 
 	}; 
 
