@@ -59,7 +59,7 @@ router.get('/getPropertyTax/:zipcode', (req, res) => {
 
 router.get('/getPropertyTaxByAddress/:zipcode/:address1', (req, res) => {
     let zipcode = req.params.zipcode;
-    let line1 = req.params.address1.toUpperCase;
+    let line1 = req.params.address1.toUpperCase();
 
     console.log('zipcode:',zipcode);
     console.log('line1:',line1);
@@ -67,7 +67,7 @@ router.get('/getPropertyTaxByAddress/:zipcode/:address1', (req, res) => {
     console.log('In get tax assess by address route for: ',line1,', ',zipcode);
 
     MongoClient.connect(dbRoute, function (err, conn){
-        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipcode).find({"address.oneLine":line1}).toArray((err, data) => {
+        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipcode).findOne({"address.oneLine":line1}, function(err,data) {
 
             //console.log('Returns: ',data);
             if (err){

@@ -1,4 +1,11 @@
-/* App.js */
+/* App.js 
+//11598 11559 11096
+To Do:
+
+- Incorporate all addresses to search bar, not only 11598
+
+
+*/
 import ReactSearchBox from 'react-search-box'
 import React, { Component } from 'react'
 var CanvasJSReact = require('./canvasjs.react');
@@ -7,9 +14,8 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var calc = require('./effCalc.js');
 
 
- 
-var dataPoints =[];
 var addressPoints = []; 
+var dataPoints =[];
 var db_connection = [];
 
 
@@ -57,9 +63,6 @@ export default class App extends Component {
 		.then(function(db_connection) {
 			calc.getAvg(db_connection);
 		});
-
-
-		//console.log('Data got from db: ',db_connection);
 	}
 
 	test_data = [
@@ -89,7 +92,7 @@ export default class App extends Component {
 		const options = {
 			theme: "light2",
 			title: {
-				text: "Stock Price of NIFTY 50"
+				text: "Price per Sq Ft of " + this.state.address
 			},
 			axisY: {
 				title: "Price in USD",
@@ -103,24 +106,34 @@ export default class App extends Component {
 				dataPoints: dataPoints
 			}]
 		}
+		this.testMount();
+		this.getDataFromDb(11598);
+
 		return (
 
-		<div>
-		<h1> Hello </h1>
+		<div> 
+		<center>
+		<h1> Real Estate Efficiency Calculator </h1>
+		</center>
+
 		<ReactSearchBox
         placeholder="Placeholder"
-        value="Doe"
-        data={this.test_data}
+        value="41 Cooper Square"
+        onSelect={this.handleSelect}
+        data={db_connection}
         callback={record => console.log(record)}
       />
-    
-			<CanvasJSChart options = {options} 
-				 onRef={ref => this.chart = ref}
-			/>
-			{/*You can get reference to the chart instance as shown above using onRef. 
-			This allows you to access all chart properties and methods*/}
 
-		
+		    
+		<CanvasJSChart options = {options} 
+			 onRef={ref => this.chart = ref}
+		/>
+		{/*You can get reference to the chart instance as shown above using onRef. 
+		This allows you to access all chart properties and methods*/}
+
+
+		<p> Avg Price of Zip Code</p>
+
       </div>
 		);
 	}
