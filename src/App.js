@@ -18,13 +18,14 @@ var addressPoints = [];
 var dataPoints =[];
 var db_connection = [];
 var address_connection = [];
+var specific_address = [];
 
 
 export default class App extends Component {
 
 	constructor(props) {
 		super(props)
-		this.state = {address: "41 Cooper Square"}
+		this.state = {address: "25 HICKORY RD, WOODMERE, NY 11598"}
 		this.handleSelect = this.handleSelect.bind(this)
 	}	
 	handleSelect(event) {
@@ -47,17 +48,23 @@ export default class App extends Component {
 	}
 
 	getAddressFromDb = (zipCode) => {
+		address_connection = [];
+		var temp = [];
 
 		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
 		.then(function(response) {
 			return response.json();
 		})
 		.then(function(data1) {
+			temp = [];
 			for (var i = 0; i < data1.data.length; i++) {
-				address_connection.push({
+				if (temp.indexOf(data1.data[i].address.oneLine) < 0) {
+					address_connection.push({
 					key: data1.data[i].address,
 					value: data1.data[i].address.oneLine
 				});
+					temp.push(data1.data[i].address.oneLine);
+				}
 			}
 		})
 		fetch("http://localhost:3001/api/getPropertyTax/11559")
@@ -65,15 +72,53 @@ export default class App extends Component {
 			return response.json();
 		})
 		.then(function(data1) {
+			temp = [];
 			for (var i = 0; i < data1.data.length; i++) {
-				address_connection.push({
+				if (temp.indexOf(data1.data[i].address.oneLine) < 0) {
+					address_connection.push({
 					key: data1.data[i].address,
 					value: data1.data[i].address.oneLine
 				});
+					temp.push(data1.data[i].address.oneLine);
+				}
 			}
 		})
 		console.log('Data got for addresses: ',address_connection);
+
 	}
+
+
+	getDataByAddress = (zipcode,line1) => {
+		// (address_num<>street_name,<>town,<>state<>zipcode)
+		// (326 barr ave, woodmere, ny 10025)
+		// ave, rd .. NOT avenue,road
+		//this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
+		specific_address = [];
+		console.log('Fetching data by address for: ',line1,', ',zipcode);
+		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			var temp = [];
+			var temp_month = 0;
+			for (var i = data1.data.assessmenthistory.length-1; i > -1; i--) {
+				if (temp.indexOf(data1.data.assessmenthistory[i].tax.taxyear) >= 0) {
+					temp_month = 6;
+				} else {
+					temp.push(data1.data.assessmenthistory[i].tax.taxyear);
+					temp_month = 0;
+				}
+				specific_address.push({
+					x: new Date(data1.data.assessmenthistory[i].tax.taxyear,temp_month),
+					y: data1.data.assessmenthistory[i].tax.taxamt
+				});
+			}
+		})
+		console.log('Specific Address: ', specific_address)
+		
+
+	}; 
 
 	getDataFromDb = (zipCode) => {
 		db_connection = [];
@@ -97,28 +142,6 @@ export default class App extends Component {
 		});
 	}
 
-	test_data = [
-	    {
-	      key: 'john',
-	      value: 'John Doe',
-	    },
-	    {
-	      key: 'jane',
-	      value: 'Jane Doe',
-	    },
-	    {
-	      key: 'mary',
-	      value: 'Mary Phillips',
-	    },
-	    {
-	      key: 'robert',
-	      value: 'Robert',
-	    },
-	    {
-	      key: 'karius',
-	      value: 'Karius',
-	    },
-    ]
 	render() {	
 		const options = {
 			theme: "light2",
@@ -132,14 +155,16 @@ export default class App extends Component {
 			},
 			data: [{
 				type: "line",
-				xValueFormatString: "MMM YYYY",
+				xValueFormatString: "YYYY",
 				yValueFormatString: "$#,##0.00",
-				dataPoints: dataPoints
+				dataPoints: dataPoints //change this to specific_address
 			}]
 		}
-		this.testMount();
+		//change these positionings
 		this.getAddressFromDb(11598);
 		this.getDataFromDb(11598);
+		this.getDataByAddress(this.state.address.slice(-5),this.state.address);
+
 
 		return (
 
@@ -171,6 +196,7 @@ export default class App extends Component {
 	}
 	
 	componentDidMount(){
+		/*
 		var chart = this.chart;
 		fetch('./nifty-stock-price.json')
 		.then(function(response) {
@@ -183,9 +209,13 @@ export default class App extends Component {
 					y: data[i].y
 				});
 			}
+			console.log(dataPoints);
 			chart.render();
 		})
-		//this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
+		*/
+		dataPoints = specific_address;
+		var chart = this.chart;
+		chart.render();
 		//this.getDataByZip(11598);
 	}
 
@@ -207,16 +237,6 @@ export default class App extends Component {
 		  //console.log('data: ',dat2)
 
 	};*/
-
-	getDataByAddress = (zipcode,line1) => {
-		// (address_num<>street_name,<>town,<>state<>zipcode)
-		// (326 barr ave, woodmere, ny 10025)
-		// ave, rd .. NOT avenue,road
-
-		console.log('Fetching data by address for: ',line1,', ',zipcode);
-		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1)
-
-	}; 
 
 	getDataByZip = (zipcode) => {
 
