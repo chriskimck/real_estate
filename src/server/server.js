@@ -43,7 +43,7 @@ router.get('/getPropertyTax/:zipcode', (req, res) => {
     MongoClient.connect(dbRoute, function (err, conn){
         conn.db("RealEstate").collection('PropertyTaxAssessments'+zipCode).find().toArray((err, data) => {
 
-            console.log('Returns: ',data);
+            //console.log('Returns: ',data);
             if (err){
                 conn.close();
                 return res.json({ success: false, error: err });
