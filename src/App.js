@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 var CanvasJSReact = require('./canvasjs.react');
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+var calc = require('./effCalc.js');
 
 
  
@@ -12,34 +13,53 @@ var dataPoints =[];
 
 export default class App extends Component {
 
-	
+	constructor(props) {
+		super(props)
+		this.state = {address: "41 Cooper Square"}
+		this.handleSelect = this.handleSelect.bind(this)
+	}	
+	handleSelect(event) {
+		this.setState({address: event.value})
+	}
+	testMount(){
+		fetch('./address-store.json')
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data) {
+			for (var i = 0; i < data.length; i++) {
+				addressPoints.push({
+					key: data[i].key,
+					value: data[i].value
+				});
+			}
+		})
+		//console.log(addressPoints);
+	}
 
-	test_data = [
-    {
-      key: 'john',
-      value: 'John Doe',
-    },
-    {
-      key: 'jane',
-      value: 'Jane Doe',
-    },
-    {
-      key: 'mary',
-      value: 'Mary Phillips',
-    },
-    {
-      key: 'robert',
-      value: 'Robert',
-    },
-    {
-      key: 'karius',
-      value: 'Karius',
-    },
-  ]
-	render() {
+	getDataFromDb = (zipCode) => {
+		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				db_connection.push({
+					values: data1.data[i]
+					//address: data1.data[i].address,
+					//value: data1.data[i].address.oneLine
+				});
+			}
+			return db_connection;
+		})
+		.then(function(db_connection) {
+			calc.getAvg(db_connection);
+		});
 
 
-
+		//console.log('Data got from db: ',db_connection);
+	}
+	render(){
 		const options = {
 			theme: "light2",
 			title: {
@@ -94,11 +114,12 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		//this.getDataFromDb(11598).then((data)=>console.log(data.json()));
-		this.getDataByAddress(11598,'326 barr ave, woodmere, ny 11598');
+		this.getDataFromDb(11598);
+		//this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
+		//this.getDataByZip(11598);
 	}
 
-	getDataFromDb = (zipCode) => {
+	/*getDataFromDb = (zipCode) => {
 		console.log("Going into getdata");
 
 		var dat = fetch("http://localhost:3001/api/getPropertyTax/"+zipCode);
@@ -113,7 +134,7 @@ export default class App extends Component {
 		  //.then((res) => this.setState({ data: res.data }));
 		  //console.log('data: ',dat2)
 
-	};
+	};*/
 
 	getDataByAddress = (zipcode,line1) => {
 		// (address_num<>street_name,<>town,<>state<>zipcode)
@@ -121,7 +142,29 @@ export default class App extends Component {
 		// ave, rd .. NOT avenue,road
 
 		console.log('Fetching data by address for: ',line1,', ',zipcode);
-		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1);
+		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1)
+		
+
+	}; 
+
+	getDataByZip = (zipcode) => {
+
+		console.log('Fetching data by address for: ',zipcode);
+		fetch("http://localhost:3001/api/getPropertyTaxByZip/"+zipcode)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				db_connection.push({
+					address: data1.data[i].address,
+					value: data1.data[i].address.oneLine
+				});
+			}
+		})
+		.then(function(db_connection) {
+			calc.getAvg(db_connection);
+		});
 
 	}; 
 

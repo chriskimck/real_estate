@@ -69,7 +69,7 @@ router.get('/getPropertyTaxByAddress/:zipcode/:address1', (req, res) => {
     MongoClient.connect(dbRoute, function (err, conn){
         conn.db("RealEstate").collection('PropertyTaxAssessments'+zipcode).find({"address.oneLine":line1}).toArray((err, data) => {
 
-            console.log('Returns: ',data[0]);
+            //console.log('Returns: ',data);
             if (err){
                 conn.close();
                 return res.json({ success: false, error: err });
@@ -79,6 +79,29 @@ router.get('/getPropertyTaxByAddress/:zipcode/:address1', (req, res) => {
         });
     });
 });
+
+/*router.get('/getPropertyTaxByZip/:zipcode', (req, res) => {
+    let zipcode = req.params.zipcode;
+
+    console.log('zipcode:',zipcode);
+
+    console.log('In get tax assess by address route for: ',zipcode);
+
+    MongoClient.connect(dbRoute, function (err, conn){
+        conn.db("RealEstate").collection('PropertyTaxAssessments'+zipcode).find({}).toArray({}, function(err,data) {
+
+            //console.log('Returns: ',data);
+            if (err){
+                console.log("Error with db call");
+                conn.close();
+                return res.json({ success: false, error: err });
+            } 
+            console.log('Success!');
+            conn.close();
+            res.json({ success: true, data: data });
+        });
+    });
+});*/
 
 // append /api for our http requests
 app.use('/api', router);
