@@ -1,5 +1,5 @@
 /* App.js 
-
+//11598 11559 11096
 To Do:
 
 - Incorporate addresses to the json file to test search bar
@@ -55,7 +55,7 @@ export default class App extends Component {
 		.then(function(data1) {
 			for (var i = 0; i < data1.data.length; i++) {
 				db_connection.push({
-					address: data1.data[i].address,
+					key: data1.data[i].address,
 					value: data1.data[i].address.oneLine
 				});
 			}
@@ -104,6 +104,7 @@ export default class App extends Component {
 			}]
 		}
 		this.testMount();
+		this.getDataFromDb(11598);
 
 		return (
 
@@ -116,7 +117,7 @@ export default class App extends Component {
         placeholder="Placeholder"
         value="41 Cooper Square"
         onSelect={this.handleSelect}
-        data={addressPoints}
+        data={db_connection}
         callback={record => console.log(record)}
       />
 
@@ -149,7 +150,6 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		//this.getDataFromDb(11598);
 		this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
 	}
 
