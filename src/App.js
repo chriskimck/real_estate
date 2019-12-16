@@ -24,14 +24,26 @@ var queried_zipAvgPrice = {"11598":6.21, "11559":3.91, "11096":3.65};
 var json_11598 = require('./11598.json');
 var json_11559 = require('./11559.json');
 var json_11096 = require('./11096.json');
+var avg_11598 = require('./avg_11598.json');
 
 export default class App extends Component {
 
 	constructor(props) {
 		super(props)	
 		this.state = {address: "TBD", input_address_data:[], avg_Zip: 0, compare: 0, color: "blue", percent_diff:0}
+		this.handle11598 = this.handle11598.bind(this)
 		this.handleSelect = this.handleSelect.bind(this)
 	}	
+	handle11598(event) {
+		specific_address = [];
+		for (var i = 0; i < avg_11598.length; i++) {
+			specific_address.push({
+				x: new Date(avg_11598[i].x),
+				y: avg_11598[i].y
+			});
+		}
+		this.setState({address: "Zip Code 11598",input_address_data:specific_address,avg_Zip: 0, compare: 0, color: "blue", percent_diff:0});
+	}
 	handleSelect(event) {
 		var update_comp = 0;
 		var worth_it = 'green';
@@ -272,6 +284,7 @@ export default class App extends Component {
 		<p style={styles}> Average Price per Sq Ft of Zip Code {this.state.address.slice(-5)} in 2017: {this.state.avg_Zip} </p>
 		<p style={styles}> Price per Sq Ft of {this.state.address} in 2017: {this.state.compare} </p>
 		<p style={styles}> Percent Difference: {this.state.percent_diff}% from the Average Price</p>
+		<button type="button" id="myBtn" onClick={this.handle11598}> Graph the Avg Prices per Assessment of Zip Code: 11598 </button>
 
 		</center>
 
@@ -279,7 +292,7 @@ export default class App extends Component {
 		);
 	}
 	
-	componentDidMount(){
+	componentDidMount(){ //Component Mount
 		/*
 		var chart = this.chart;
 		fetch('./nifty-stock-price.json')

@@ -15,7 +15,11 @@ export function getAvg(data){
         if(sqFt==0){continue;}
         curSq+=sqFt;
         numHouses+=1;
-
+        if(typeof house['values']['assessmenthistory'][0] == 'undefined') {
+            console.log('lol');
+            numHouses-=1;
+            continue;
+        }
         let price = house['values']['assessmenthistory'][0]['tax']['taxamt'];
         totalPrice+=price;
         //console.log(house['values']['building']['size']['grosssizeadjusted']);
