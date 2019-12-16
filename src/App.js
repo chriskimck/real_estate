@@ -51,7 +51,8 @@ export default class App extends Component {
 		address_connection = [];
 		var temp = [];
 
-		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
+		//fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
+		fetch("./11598.json")
 		.then(function(response) {
 			return response.json();
 		})
@@ -60,14 +61,15 @@ export default class App extends Component {
 			for (var i = 0; i < data1.data.length; i++) {
 				if (temp.indexOf(data1.data[i].address.oneLine) < 0) {
 					address_connection.push({
-					key: data1.data[i].address,
+					key: data1.data[i].address.oneLine,
 					value: data1.data[i].address.oneLine
 				});
 					temp.push(data1.data[i].address.oneLine);
 				}
 			}
 		})
-		fetch("http://localhost:3001/api/getPropertyTax/11559")
+		//fetch("http://localhost:3001/api/getPropertyTax/11559")
+		fetch("./11559.json")
 		.then(function(response) {
 			return response.json();
 		})
@@ -76,7 +78,23 @@ export default class App extends Component {
 			for (var i = 0; i < data1.data.length; i++) {
 				if (temp.indexOf(data1.data[i].address.oneLine) < 0) {
 					address_connection.push({
-					key: data1.data[i].address,
+					key: data1.data[i].address.oneLine,
+					value: data1.data[i].address.oneLine
+				});
+					temp.push(data1.data[i].address.oneLine);
+				}
+			}
+		})
+		fetch("./11096.json")
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			temp = [];
+			for (var i = 0; i < data1.data.length; i++) {
+				if (temp.indexOf(data1.data[i].address.oneLine) < 0) {
+					address_connection.push({
+					key: data1.data[i].address.oneLine,
 					value: data1.data[i].address.oneLine
 				});
 					temp.push(data1.data[i].address.oneLine);
