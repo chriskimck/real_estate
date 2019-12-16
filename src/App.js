@@ -17,6 +17,7 @@ var calc = require('./effCalc.js');
 var addressPoints = []; 
 var dataPoints =[];
 var db_connection = [];
+var address_connection = [];
 
 
 export default class App extends Component {
@@ -45,7 +46,38 @@ export default class App extends Component {
 		//console.log(addressPoints);
 	}
 
+	getAddressFromDb = (zipCode) => {
+
+		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				address_connection.push({
+					key: data1.data[i].address,
+					value: data1.data[i].address.oneLine
+				});
+			}
+		})
+		fetch("http://localhost:3001/api/getPropertyTax/11559")
+		.then(function(response) {
+			return response.json();
+		})
+		.then(function(data1) {
+			for (var i = 0; i < data1.data.length; i++) {
+				address_connection.push({
+					key: data1.data[i].address,
+					value: data1.data[i].address.oneLine
+				});
+			}
+		})
+		console.log('Data got for addresses: ',address_connection);
+	}
+
 	getDataFromDb = (zipCode) => {
+		db_connection = [];
+
 		fetch("http://localhost:3001/api/getPropertyTax/"+zipCode)
 		.then(function(response) {
 			return response.json();
@@ -86,9 +118,8 @@ export default class App extends Component {
 	      key: 'karius',
 	      value: 'Karius',
 	    },
-	]
-	
-	render(){
+    ]
+	render() {	
 		const options = {
 			theme: "light2",
 			title: {
@@ -107,6 +138,7 @@ export default class App extends Component {
 			}]
 		}
 		this.testMount();
+		this.getAddressFromDb(11598);
 		this.getDataFromDb(11598);
 
 		return (
@@ -120,7 +152,7 @@ export default class App extends Component {
         placeholder="Placeholder"
         value="41 Cooper Square"
         onSelect={this.handleSelect}
-        data={db_connection}
+        data={address_connection}
         callback={record => console.log(record)}
       />
 
@@ -153,12 +185,13 @@ export default class App extends Component {
 			}
 			chart.render();
 		})
-		this.getDataFromDb(11598);
 		//this.getDataByAddress(11598,'25 HICKORY RD, WOODMERE, NY 11598');
 		//this.getDataByZip(11598);
 	}
 
-	/*getDataFromDb = (zipCode) => {
+	/*
+
+	getDataFromDb = (zipCode) => {
 		console.log("Going into getdata");
 
 		var dat = fetch("http://localhost:3001/api/getPropertyTax/"+zipCode);
@@ -182,7 +215,6 @@ export default class App extends Component {
 
 		console.log('Fetching data by address for: ',line1,', ',zipcode);
 		fetch("http://localhost:3001/api/getPropertyTaxByAddress/"+zipcode+'/'+line1)
-		
 
 	}; 
 
@@ -204,7 +236,5 @@ export default class App extends Component {
 		.then(function(db_connection) {
 			calc.getAvg(db_connection);
 		});
-
-	}; 
-
+	};
 }
