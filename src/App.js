@@ -218,12 +218,13 @@ export default class App extends Component {
 					x: new Date(data1.data.assessmenthistory[i].tax.taxyear,temp_month),
 					y: data1.data.assessmenthistory[i].tax.taxamt / data1.data.building.size.grosssizeadjusted
 				});
+				/* Ugly, so taking this out. Sad face.
 				if (data1.data.assessmenthistory[i].tax.taxyear == "2017") {
 					specific_address.push({
 						x: new Date(data1.data.assessmenthistory[i].tax.taxyear,temp_month),
 						y: queried_zipAvgPrice[zipcode]
 					});
-				}
+				}*/
 
 			}
 		})
