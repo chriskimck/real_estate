@@ -35,8 +35,8 @@ export function getAvg(data){
 
     console.log('Total sqFt: ',curSq);
     console.log('Total houses: ',numHouses);
-    console.log('Average: ',avg);
-    console.log('Price: ', price_avg)
+    console.log('Average sqft: ',avg);
+    console.log('2017: avg Price: ', price_avg)
     return avg;
 
 }

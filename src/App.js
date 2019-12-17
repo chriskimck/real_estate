@@ -25,6 +25,8 @@ var json_11598 = require('./11598.json');
 var json_11559 = require('./11559.json');
 var json_11096 = require('./11096.json');
 var avg_11598 = require('./avg_11598.json');
+var avg_11559 = require('./avg_11559.json');
+var avg_11096 = require('./avg_11096.json');
 
 export default class App extends Component {
 
@@ -32,6 +34,8 @@ export default class App extends Component {
 		super(props)	
 		this.state = {address: "TBD", input_address_data:[], avg_Zip: 0, compare: 0, color: "blue", percent_diff:0}
 		this.handle11598 = this.handle11598.bind(this)
+		this.handle11559 = this.handle11559.bind(this)
+		this.handle11096 = this.handle11096.bind(this)
 		this.handleSelect = this.handleSelect.bind(this)
 	}	
 	handle11598(event) {
@@ -43,6 +47,26 @@ export default class App extends Component {
 			});
 		}
 		this.setState({address: "Zip Code 11598",input_address_data:specific_address,avg_Zip: 0, compare: 0, color: "blue", percent_diff:0});
+	}
+	handle11559(event) {
+		specific_address = [];
+		for (var i = 0; i < avg_11559.length; i++) {
+			specific_address.push({
+				x: new Date(avg_11559[i].x),
+				y: avg_11559[i].y
+			});
+		}
+		this.setState({address: "Zip Code 11559",input_address_data:specific_address,avg_Zip: 0, compare: 0, color: "blue", percent_diff:0});
+	}
+	handle11096(event) {
+		specific_address = [];
+		for (var i = 0; i < avg_11096.length; i++) {
+			specific_address.push({
+				x: new Date(avg_11096[i].x),
+				y: avg_11096[i].y
+			});
+		}
+		this.setState({address: "Zip Code 11096",input_address_data:specific_address,avg_Zip: 0, compare: 0, color: "blue", percent_diff:0});
 	}
 	handleSelect(event) {
 		var update_comp = 0;
@@ -285,6 +309,8 @@ export default class App extends Component {
 		<p style={styles}> Price per Sq Ft of {this.state.address} in 2017: {this.state.compare} </p>
 		<p style={styles}> Percent Difference: {this.state.percent_diff}% from the Average Price</p>
 		<button type="button" id="myBtn" onClick={this.handle11598}> Graph the Avg Prices per Assessment of Zip Code: 11598 </button>
+		<button type="button" id="myBtn2" onClick={this.handle11559}> Graph the Avg Prices per Assessment of Zip Code: 11559 </button>
+		<button type="button" id="myBtn3" onClick={this.handle11096}> Graph the Avg Prices per Assessment of Zip Code: 11096 </button>
 
 		</center>
 
